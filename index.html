@@ -287,8 +287,8 @@
             background-color: #0f2d17; 
         }
 
-        /* ================= ESPACIOS PARA IMÁGENES SVG =================
-           Cada .img-slot intenta cargar un archivo .svg.
+        /* ================= ESPACIOS PARA IMÁGENES JPG =================
+           Cada .img-slot intenta cargar un archivo .jpg.
            Se asume ruta relativa para misma carpeta.
         */
         .img-slot {
@@ -731,11 +731,11 @@
             <!-- Espacio para la imagen SVG de portada. -->
             <div class="img-slot img-slot-portada" id="slot-portada">
                 <!-- RUTA AJUSTADA AQUÍ -->
-                <img src="portada.svg" alt="Portada CICAA 2026" onerror="imgSlotFallback(this)" onclick="openModal('portada.svg')" title="Clic para ampliar">
+                <img src="portada.jpg" alt="Portada CICAA 2026" onerror="imgSlotFallback(this)" onclick="openModal('portada.jpg')" title="Clic para ampliar">
                 <div class="img-slot-placeholder">
                     <i class="fa-solid fa-image"></i>
                     <span>Espacio para imagen SVG — Portada del evento</span>
-                    <small>Archivo esperado: portada.svg (1200 × 500 px)</small>
+                    <small>Archivo esperado: portada.jpg (1200 × 500 px)</small>
                 </div>
             </div>
 
@@ -861,7 +861,7 @@
 const AGENDA_DATA = {
     "portada": {
         // RUTA AJUSTADA AQUÍ
-        "imagen": "portada.svg"
+        "imagen": "portada.jpg"
     },
     "salas": {
         "sala1": {
@@ -899,7 +899,7 @@ const AGENDA_DATA = {
             "style": "background: var(--dark-green)",
             "nombres": [],
             // RUTA AJUSTADA AQUÍ
-            "imagen": "plenaria-dia1.svg"
+            "imagen": "plenaria-dia1.jpg"
         },
         {
             "hora": "15:00 - 16:00",
@@ -908,7 +908,7 @@ const AGENDA_DATA = {
             "style": "background: var(--light-green)",
             "nombres": [],
             // RUTA AJUSTADA AQUÍ
-            "imagen": "panel-1.svg"
+            "imagen": "panel-1.jpg"
         },
         {
             "hora": "16:00 - 17:00",
@@ -977,7 +977,7 @@ const AGENDA_DATA = {
             "texto": "Plenaria",
             "icono": "fa-solid fa-users",
             // RUTA AJUSTADA AQUÍ
-            "imagen": "plenaria-dia2.svg",
+            "imagen": "plenaria-dia2.jpg",
             "nombres": [],
             "style": "",
             "onclick": ""
@@ -988,7 +988,7 @@ const AGENDA_DATA = {
             "texto": "VIEM - Panel",
             "icono": "fa-solid fa-chalkboard-user",
             // RUTA AJUSTADA AQUÍ
-            "imagen": "viem-panel.svg",
+            "imagen": "viem-paneljpg",
             "nombres": [],
             "style": "",
             "onclick": ""
@@ -1009,7 +1009,7 @@ const AGENDA_DATA = {
             "texto": "Panel 2",
             "icono": "fa-solid fa-people-group",
             // RUTA AJUSTADA AQUÍ
-            "imagen": "panel-2.svg",
+            "imagen": "panel-2.jpg",
             "nombres": [],
             "style": "",
             "onclick": ""
@@ -1105,7 +1105,7 @@ const AGENDA_DATA = {
             "texto": "Plenaria",
             "icono": "fa-solid fa-users",
             // RUTA AJUSTADA AQUÍ
-            "imagen": "plenaria-dia3.svg",
+            "imagen": "plenaria-dia3.jpg",
             "nombres": [],
             "style": "",
             "onclick": ""
@@ -1116,7 +1116,7 @@ const AGENDA_DATA = {
             "texto": "VIEM – Salón de la innovación",
             "icono": "fa-regular fa-lightbulb",
             // RUTA AJUSTADA AQUÍ
-            "imagen": "viem-innovacion.svg",
+            "imagen": "viem-innovacion.jpg",
             "nombres": [],
             "style": "",
             "onclick": ""
@@ -1165,7 +1165,7 @@ const AGENDA_DATA = {
             "texto": "Panel 3",
             "icono": "fa-solid fa-people-group",
             // RUTA AJUSTADA AQUÍ
-            "imagen": "panel-3.svg",
+            "imagen": "panel-3.jpg",
             "nombres": [],
             "style": "",
             "onclick": ""
@@ -1825,7 +1825,7 @@ function renderDia1() {
                 <div class="timeline-content">
                     <div class="timeline-banner-container">
                         <!-- El 'false' al final desactiva el formato miniatura para usar el tamaño de portada -->
-                        ${imgSlotHTML(item.imagen, item.titulo, `Archivo esperado: ${item.imagen || 'archivo.svg'}`, false)}
+                        ${imgSlotHTML(item.imagen, item.titulo, `Archivo esperado: ${item.imagen || 'archivo.jpg'}`, false)}
                         <div style="font-size: 1.25rem; font-weight: 700;">${item.titulo}</div>
                         ${nombresHTML(item.nombres)}
                     </div>
@@ -1877,7 +1877,7 @@ function renderDayTable(dayKey, mountId) {
                 <td colspan="3" class="${cls}"${styleAttr}>
                     <div class="timeline-banner-container" style="padding: 15px; max-width: 900px; margin: 0 auto;">
                         <!-- El 'false' desactiva el formato miniatura para usar el tamaño de portada -->
-                        ${imgSlotHTML(row.imagen, row.texto, `Archivo esperado: ${row.imagen || 'archivo.svg'}`, false)}
+                        ${imgSlotHTML(row.imagen, row.texto, `Archivo esperado: ${row.imagen || 'archivo.jpg'}`, false)}
                         <div style="font-size: 1.25rem; font-weight: 700; margin-top: 5px;">${icon}&nbsp; ${row.texto}</div>
                         ${nombresHTML(row.nombres)}
                     </div>
