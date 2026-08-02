@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Dinámica - CICAA 2026</title>
+
+    <!-- Fuente Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+    <!-- Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /*
+           ===========================================================
+           PALETA DE COLOR — Teoría del color aplicada (modo claro)
+           ===========================================================
+           Esquema análogo cálido con ancla fría: se recorre la rueda
+           de color desde el verde (frescura/naturaleza) hacia el
+           amarillo y la terracota (calidez/tierra), todo anclado por
+           un verde bosque muy oscuro que aporta seriedad institucional.
+
+           - Base / ancla:    Verde bosque oscuro   -> jerarquía, texto sobre color, encabezados
+           - Análogo vívido:  Verde hoja brillante   -> Sala 1 (acento vivo, usar con texto oscuro encima)
+           - Análogo cálido:  Amarillo / ámbar        -> Sala 2 (transición cálida, texto oscuro)
+           - Complementario tierra: Terracota             -> Sala 3 (cierre cálido de la rampa)
+           - Neutro:          Crema                   -> fondos, respiro visual, reduce fatiga
+
+           Nota de accesibilidad: el verde vívido (#46BF34) y el amarillo
+           (#F2A922) son colores claros/saturados; por contraste WCOMBI
+           se usan con texto verde oscuro encima en vez de blanco.
+        */
+        :root {
+            --dark-green: #174021;   /* Base: Verde bosque oscuro */
+            --light-green: #46BF34;  /* Análogo vívido: Sala 1 */
+            --yellow: #F2A922;       /* Análogo cálido: Sala 2 */
+            --terracotta: #BF7449;   /* Complementario tierra: Sala 3 */
+            --cream: #F2F2DF;        /* Neutro cálido */
+
+            /* Colores complementarios para UI */
+            --bg-color: #FAFAF8;
+            --text-dark: #202B22;
+            --border-color: #DCE3D8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(23, 64, 33, 0.1);
+            overflow: hidden;
+        }
+
+        .hero-header {
+            background-color: var(--dark-green);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--light-green) 0%, var(--yellow) 50%, var(--terracotta) 100%);
+        }
+
+        .hero-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-header p {
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .tabs-container {
+            padding: 20px;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .tab-btn {
+            background: var(--cream);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            background: #EAEAD8;
+        }
+
+        .tab-btn.active {
+            background-color: var(--dark-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(23, 64, 33, 0.3);
+        }
+
+        .tab-btn.poster-tab {
+            background-color: #EAF7E6;
+            color: var(--dark-green);
+            border: 1px solid var(--light-green);
+        }
+        .tab-btn.poster-tab.active {
+            background-color: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        /* ================= VISTA DE INICIO ================= */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .home-section {
+            padding: 40px 30px 50px;
+        }
+
+        .home-intro {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+
+        .home-intro h2 {
+            color: var(--dark-green);
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        .home-intro p {
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            margin-bottom: 14px;
+        }
+
+        .home-meta {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin: 26px 0 6px;
+        }
+
+        .home-meta span {
+            background: var(--cream);
+            color: var(--dark-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .axis-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            max-width: 1100px;
+            margin: 0 auto 40px;
+        }
+
+        .axis-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 0 0 1px var(--border-color);
+            border-top: 5px solid var(--light-green);
+        }
+
+        .axis-card.e2 { border-top-color: var(--yellow); }
+        .axis-card.e3 { border-top-color: var(--terracotta); }
+
+        .axis-card h3 {
+            font-size: 0.95rem;
+            color: var(--dark-green);
+            margin-bottom: 8px;
+        }
+
+        .axis-card p {
+            font-size: 0.9rem;
+            color: #5b6660;
+        }
+
+        .cta-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .btn-cta {
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 14px 30px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-cta.primary {
+            background-color: var(--dark-green);
+            color: white;
+            box-shadow: 0 6px 14px rgba(23, 64, 33, 0.3);
+        }
+        .btn-cta.primary:hover { transform: translateY(-2px); background-color: #0f2d17; }
+
+        .btn-cta.secondary {
+            background: var(--cream);
+            color: var(--dark-green);
+            border: 1px solid var(--border-color);
+        }
+        .btn-cta.secondary:hover { transform: translateY(-2px); background: #EAEAD8; }
+
+        .back-home-btn {
+            background-color: var(--dark-green);
+            color: white;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            margin: 20px 0 20px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(23, 64, 33, 0.3);
+        }
+        .back-home-btn:hover { 
+            transform: scale(1.05);
+            background-color: #0f2d17; 
+        }
+
+        /* ================= ESPACIOS PARA IMÁGENES SVG =================
+           Cada .img-slot intenta cargar un archivo .svg.
+           Se asume ruta relativa para misma carpeta.
+        */
+        .img-slot {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .img-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* EFECTO HOVER PARA IMÁGENES AMPLIABLES */
+        .img-slot:not(.img-slot-mini) img {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .img-slot:not(.img-slot-mini):hover img {
+            transform: scale(1.02);
+        }
+
+        /* ESTILOS DEL MODAL (LIGHTBOX) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .close-modal:hover {
+            color: var(--light-green);
+        }
+
+        .img-slot.img-slot-empty {
+            border: 2px dashed #C9D3CC;
+            background: repeating-linear-gradient(45deg, #FBFBF9, #FBFBF9 10px, #F3F2ED 10px, #F3F2ED 20px);
+        }
+
+        .img-slot-placeholder {
+            display: none;
+            text-align: center;
+            color: #8B978F;
+            padding: 10px;
+        }
+
+        .img-slot.img-slot-empty .img-slot-placeholder {
+            display: block;
+        }
+
+        .img-slot-placeholder i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .img-slot-placeholder span {
+            display: block;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--dark-green);
+        }
+
+        .img-slot-placeholder small {
+            display: block;
+            font-size: 0.72rem;
+            margin-top: 3px;
+            color: #9AA5A0;
+            word-break: break-all;
+        }
+
+        .img-slot-portada {
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 12 / 5; /* Mantiene la proporción exacta de 1200x500 */
+            height: auto;
+            margin: 0 auto 30px;
+        }
+
+        .img-slot-mini {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+
+        .img-slot-mini.img-slot-empty { border-width: 2px; }
+        .img-slot-mini .img-slot-placeholder { padding: 0; }
+        .img-slot-mini .img-slot-placeholder i { font-size: 1rem; margin-bottom: 0; color: #8B978F; }
+        .img-slot-mini .img-slot-placeholder span,
+        .img-slot-mini .img-slot-placeholder small { display: none; }
+
+        .event-plenary-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-content-inner {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Nuevos estilos para hacer las imágenes de la línea de tiempo grandes */
+        .timeline-banner-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timeline-banner-container .img-slot {
+            width: 100%;
+            aspect-ratio: 12 / 5; /* Mantiene la proporción exacta de 1200x500 */
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 10px;
+        }
+
+        .item-nombres {
+            list-style: none;
+            margin-top: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+        .item-nombres li { line-height: 1.4; }
+
+        @media (max-width: 768px) {
+            .axis-grid { grid-template-columns: 1fr; }
+            /* Se eliminan las alturas fijas porque aspect-ratio escala automáticamente */
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timeline {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--cream);
+            border-radius: 4px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .time-badge {
+            background: var(--terracotta);
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            min-width: 150px;
+            text-align: center;
+            z-index: 2;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-content {
+            background: white;
+            border: 2px solid var(--cream);
+            margin-left: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            flex-grow: 1;
+            font-weight: 600;
+            color: var(--dark-green);
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-content {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(23, 64, 33, 0.08);
+            border-color: var(--light-green);
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 0 1px var(--border-color);
+            -webkit-overflow-scrolling: touch;
+            max-height: 75vh;
+        }
+
+        .agenda-table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+        }
+
+        .agenda-table th, .agenda-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            vertical-align: top;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .agenda-table td:last-child, .agenda-table th:last-child {
+            border-right: none;
+        }
+
+        .agenda-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        .col-time {
+            position: sticky;
+            left: 0;
+            background-color: #FDFDFD;
+            font-weight: 700;
+            color: var(--dark-green);
+            z-index: 10;
+            text-align: center;
+            vertical-align: middle !important;
+            width: 130px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+            letter-spacing: 0.5px;
+        }
+
+        .agenda-table thead th.col-time {
+            z-index: 30;
+        }
+
+        .sala-1-th { background-color: var(--light-green) !important; color: var(--dark-green) !important; }
+        .sala-2-th { background-color: var(--yellow) !important; color: var(--dark-green) !important; }
+        .sala-3-th { background-color: var(--terracotta) !important; }
+
+        .sala-subtitle {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 8px;
+            opacity: 0.95;
+            line-height: 1.3;
+        }
+
+        .event-break {
+            background-color: #F3EBD9 !important;
+            color: #8C642A;
+            font-weight: 700;
+            text-align: center;
+            vertical-align: middle !important;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .event-break:hover {
+            background-color: #E8DCB8 !important;
+            transform: scale(0.99);
+        }
+
+        .event-plenary {
+            background-color: #EAF7E6 !important;
+            color: var(--dark-green);
+            font-weight: 700;
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        .agenda-table tbody tr:not(.special-row):hover td {
+            background-color: #EEF4F0;
+        }
+
+        .agenda-table td:not(.col-time):not(.event-plenary):not(.event-break) {
+            cursor: pointer;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .cell-highlight {
+            background-color: var(--cream) !important;
+            box-shadow: inset 0 0 0 2px var(--terracotta);
+            border-radius: 4px;
+        }
+
+        .posters-header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-green);
+        }
+
+        .posters-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px var(--border-color);
+        }
+
+        .posters-table th, .posters-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .posters-table thead th {
+            background-color: var(--dark-green);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .posters-day-divider {
+            background-color: var(--cream);
+            color: var(--dark-green);
+            font-weight: 700;
+            text-align: center !important;
+            padding: 15px !important;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            min-width: 50px;
+        }
+        .badge.E1 { background-color: var(--light-green); color: var(--dark-green); }
+        .badge.E2 { background-color: var(--yellow); color: var(--dark-green); }
+        .badge.E3 { background-color: var(--terracotta); }
+
+        @media (max-width: 768px) {
+            .hero-header h1 { font-size: 1.5rem; }
+            .tab-btn { padding: 10px 15px; font-size: 0.9rem; width: 100%; justify-content: center;}
+            .timeline::before { left: 20px; }
+            .timeline-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .time-badge { min-width: auto; padding: 5px 12px; }
+            .timeline-content { margin-left: 0; width: 100%; }
+            .tab-content { padding: 15px; }
+            .col-time { width: 90px; font-size: 0.85rem; }
+        }
+    </style>
+    <script>
+        // Disponible desde ya para que los <img> de la portada (que están
+        // en el HTML estático) puedan usar el fallback aunque fallen a cargar
+        // antes de que se ejecute el <script> principal al final de la página.
+        function imgSlotFallback(img) {
+            img.style.display = 'none';
+            const slot = img.closest('.img-slot');
+            if (slot) slot.classList.add('img-slot-empty');
+        }
+    </script>
+</head>
+<body>
+
+<div class="main-container">
+
+    <header class="hero-header">
+        <h1>VIII Congreso Internacional de Ciencias Agrarias y Ambientales</h1>
+        <p>CICAA 2026 - Agenda Académica Oficial</p>
+    </header>
+
+    <!-- ============================================================
+         VISTA DE INICIO
+         Página principal que explica el evento. Desde aquí se despliegan
+         los botones para acceder a la agenda.
+    ============================================================= -->
+    <div id="homeView" class="view active">
+        <div class="home-section">
+
+            <!-- Espacio para la imagen SVG de portada. -->
+            <div class="img-slot img-slot-portada" id="slot-portada">
+                <!-- RUTA AJUSTADA AQUÍ -->
+                <img src="portada.svg" alt="Portada CICAA 2026" onerror="imgSlotFallback(this)" onclick="openModal('portada.svg')" title="Clic para ampliar">
+                <div class="img-slot-placeholder">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Espacio para imagen SVG — Portada del evento</span>
+                    <small>Archivo esperado: portada.svg (1200 × 500 px)</small>
+                </div>
+            </div>
+
+            <div class="home-intro">
+                <h2>¿Qué es el CICAA 2026?</h2>
+                <p>
+                    El <strong>VIII Congreso Internacional de Ciencias Agrarias y Ambientales (CICAA 2026)</strong>
+                    es un espacio académico de encuentro entre investigadores, docentes, estudiantes y
+                    productores del sector agropecuario y ambiental, orientado a compartir resultados de
+                    investigación, experiencias de innovación territorial y estrategias de sostenibilidad
+                    aplicadas al campo colombiano y latinoamericano.
+                </p>
+                <p>
+                    Durante tres días, el congreso reúne conferencias plenarias, paneles de expertos,
+                    ponencias orales organizadas en tres salas temáticas y una exhibición de pósteres
+                    con los principales trabajos de investigación presentados por la comunidad participante.
+                </p>
+                <div class="home-meta">
+                    <span><i class="fa-regular fa-calendar"></i> 25 – 27 de agosto de 2026</span>
+                    <span><i class="fa-solid fa-people-group"></i> Plenarias, paneles y ponencias</span>
+                    <span><i class="fa-solid fa-images"></i> Exhibición de pósteres</span>
+                </div>
+            </div>
+
+            <div class="axis-grid">
+                <div class="axis-card">
+                    <h3><span class="badge E1">E1</span> &nbsp;Sala 1</h3>
+                    <p>Ciencia e innovación para sistemas agroambientales sostenibles.</p>
+                </div>
+                <div class="axis-card e2">
+                    <h3><span class="badge E2">E2</span> &nbsp;Sala 2</h3>
+                    <p>Bioeconomía, innovación y transformación de las cadenas agroproductivas.</p>
+                </div>
+                <div class="axis-card e3">
+                    <h3><span class="badge E3">E3</span> &nbsp;Sala 3</h3>
+                    <p>Territorio, gobernanza y sostenibilidad socioambiental.</p>
+                </div>
+            </div>
+
+            <div class="cta-row">
+                <button class="btn-cta primary" onclick="showAgenda('dia1')"><i class="fa-solid fa-calendar-days"></i> Ver la agenda completa</button>
+                <button class="btn-cta secondary" onclick="showAgenda('posteres')"><i class="fa-solid fa-images"></i> Ver pósteres</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================
+         VISTA DE AGENDA
+         Todo el contenido de aquí abajo (línea de tiempo, tablas y
+         pósteres) se genera automáticamente en JavaScript a partir del
+         objeto AGENDA_DATA que está al inicio del <script>. Para mover
+         horarios, cambiar títulos o agregar nombres de ponentes, edite
+         ese objeto — no hace falta tocar este HTML.
+    ============================================================= -->
+    <div id="agendaView" class="view">
+
+        <button class="back-home-btn" onclick="showHome()"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</button>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="openTab('dia1')"><i class="fa-regular fa-calendar"></i> Día 1 (25 Ago)</button>
+            <button class="tab-btn" onclick="openTab('dia2')"><i class="fa-regular fa-calendar-check"></i> Día 2 (26 Ago)</button>
+            <button class="tab-btn" onclick="openTab('dia3')"><i class="fa-solid fa-calendar-check"></i> Día 3 (27 Ago)</button>
+            <button class="tab-btn poster-tab" onclick="openTab('posteres')"><i class="fa-solid fa-images"></i> Pósteres</button>
+        </div>
+
+        <div id="dia1" class="tab-content active">
+            <div class="timeline" id="dia1-mount"></div>
+        </div>
+
+        <div id="dia2" class="tab-content">
+            <div class="table-wrapper">
+                <table class="agenda-table">
+                    <thead id="dia2-thead"></thead>
+                    <tbody id="dia2-mount"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="dia3" class="tab-content">
+            <div class="table-wrapper">
+                <table class="agenda-table">
+                    <thead id="dia3-thead"></thead>
+                    <tbody id="dia3-mount"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="posteres" class="tab-content">
+            <div class="posters-header">
+                <h2><i class="fa-solid fa-images"></i> Listado Oficial de Pósteres</h2>
+                <p>Conozca los trabajos de investigación exhibidos durante los espacios de break.</p>
+            </div>
+
+            <div class="table-wrapper" style="max-height: 70vh;">
+                <table class="posters-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px; text-align: center;">Código</th>
+                            <th>Título del Póster</th>
+                        </tr>
+                    </thead>
+                    <tbody id="posteres-mount"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /#agendaView -->
+
+</div>
+
+<!-- HTML DEL MODAL (LIGHTBOX) -->
+<div id="imageModal" class="modal" onclick="closeModal(event)">
+    <span class="close-modal" title="Cerrar">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+
+<script>
+/* =====================================================================
+   ZONA DE EDICIÓN — AGENDA CICAA 2026
+   ===================================================================== */
+
+const AGENDA_DATA = {
+    "portada": {
+        // RUTA AJUSTADA AQUÍ
+        "imagen": "portada.svg"
+    },
+    "salas": {
+        "sala1": {
+            "titulo": "SALA 1",
+            "subtitulo": "Ciencia e innovación para sistemas agroambientales sostenibles"
+        },
+        "sala2": {
+            "titulo": "SALA 2",
+            "subtitulo": "Bioeconomía, innovación y transformación de las cadenas agroproductivas"
+        },
+        "sala3": {
+            "titulo": "SALA 3",
+            "subtitulo": "Territorio, gobernanza y sostenibilidad socioambiental"
+        }
+    },
+    "dia1": [
+        {
+            "hora": "11:00 - 13:00",
+            "titulo": "Inscripciones",
+            "tipo": "normal",
+            "style": "",
+            "nombres": []
+        },
+        {
+            "hora": "13:00 - 14:00",
+            "titulo": "Instalación",
+            "tipo": "normal",
+            "style": "",
+            "nombres": []
+        },
+        {
+            "hora": "14:00 - 15:00",
+            "titulo": "Plenaria",
+            "tipo": "plenaria",
+            "style": "background: var(--dark-green)",
+            "nombres": [],
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "plenaria-dia1.svg"
+        },
+        {
+            "hora": "15:00 - 16:00",
+            "titulo": "Panel 1",
+            "tipo": "panel",
+            "style": "background: var(--light-green)",
+            "nombres": [],
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "panel-1.svg"
+        },
+        {
+            "hora": "16:00 - 17:00",
+            "titulo": "Acto Cultural",
+            "tipo": "normal",
+            "style": "background: var(--yellow); color: var(--dark-green)",
+            "nombres": []
+        },
+        {
+            "hora": "17:00 - 18:00",
+            "titulo": "Encuentro de cadenas",
+            "tipo": "normal",
+            "style": "",
+            "nombres": []
+        }
+    ],
+    "dia2": [
+        {
+            "tipo": "normal",
+            "hora": "08:10 - 08:30",
+            "sala1": "Radiación fotosintéticamente activa, carbohidratos solubles y composición bromatológica del maíz (Zea mays L) como indicadores del momento óptimo de cosecha para ensilaje en sistemas bovinos tropicales",
+            "sala2": "Evaluación multitemporal del crecimiento y la sanidad de arándano mediante variables fenotípicas e índices espectrales",
+            "sala3": "UNAD-GLE: formación de competencias globales para la sostenibilidad socioambiental mediante aprendizaje colaborativo internacional"
+        },
+        {
+            "tipo": "normal",
+            "hora": "08:30 - 08:50",
+            "sala1": "Termografía infrarroja para evaluar el impacto de un enriquecedor ambiental refrigerante en conejas alojadas individualmente",
+            "sala2": "Modelo integral para fortalecer la resiliencia sanitaria en la pequeña ganadería lechera y porcina",
+            "sala3": "Modelo de formación experiencial agropecuaria para Antioquia: una estrategia de articulación hacia la seguridad alimentaria, la producción responsable, la economía circular y el comercio justo en la región"
+        },
+        {
+            "tipo": "normal",
+            "hora": "08:50 - 09:10",
+            "sala1": "Comparación longitudinal del rendimiento lácteo según paridad y tamaño de camada en cabras bajo sistema semi-intensivo del trópico en la finca AulaViva Tropical",
+            "sala2": "Caracterización molecular del gen CP4 EPSPS en líneas de soya tolerantes a glifosato",
+            "sala3": "Competencias y habilidades de extensionistas en el desarrollo de agronegocios en la zona central de Boyacá"
+        },
+        {
+            "tipo": "normal",
+            "hora": "09:10 - 09:30",
+            "sala1": "Descanso y concentración espermática del eyaculado porcino influyen sobre la tasa de preñez de cerdas",
+            "sala2": "Obtención y evaluación de líneas avanzadas de soya (Glycine max L. Merr.) con tolerancia a glifosato mediante introgresión genética desde un cultivar transgénico con patente expirada",
+            "sala3": "Gobernanza del agua, territorio y educación ambiental en contextos rurales"
+        },
+        {
+            "tipo": "normal",
+            "hora": "09:30 - 09:50",
+            "sala1": "Eficiencia preliminar de un protocolo de IATF en hembras bovinas de Montes de María",
+            "sala2": "De residuo a catalizadores sostenibles: sílice derivada de cascarilla de arroz para el tratamiento de efluentes",
+            "sala3": "Planificación agroforestal participativa: una ruta hacia fincas familiares sostenibles"
+        },
+        {
+            "tipo": "break",
+            "hora": "09:50 - 10:30",
+            "texto": "Break - Pósteres (Ver Listado Día 1)",
+            "icono": "fa-solid fa-mug-hot",
+            "imagen": "",
+            "nombres": [],
+            "style": "",
+            "onclick": "goToPosters('dia1')"
+        },
+        {
+            "tipo": "plenaria",
+            "hora": "10:30 - 11:30",
+            "texto": "Plenaria",
+            "icono": "fa-solid fa-users",
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "plenaria-dia2.svg",
+            "nombres": [],
+            "style": "",
+            "onclick": ""
+        },
+        {
+            "tipo": "panel",
+            "hora": "11:30 - 12:30",
+            "texto": "VIEM - Panel",
+            "icono": "fa-solid fa-chalkboard-user",
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "viem-panel.svg",
+            "nombres": [],
+            "style": "",
+            "onclick": ""
+        },
+        {
+            "tipo": "almuerzo",
+            "hora": "12:30 - 14:00",
+            "texto": "Almuerzo libre",
+            "icono": "fa-solid fa-utensils",
+            "imagen": "",
+            "nombres": [],
+            "style": "background-color: var(--cream) !important; color: var(--dark-green);",
+            "onclick": ""
+        },
+        {
+            "tipo": "panel",
+            "hora": "14:00 - 15:00",
+            "texto": "Panel 2",
+            "icono": "fa-solid fa-people-group",
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "panel-2.svg",
+            "nombres": [],
+            "style": "",
+            "onclick": ""
+        },
+        {
+            "tipo": "especial",
+            "hora": "15:00 - 15:20",
+            "texto": "Sello Editorial",
+            "icono": "fa-solid fa-book-open",
+            "imagen": "",
+            "nombres": [],
+            "style": "background-color: #F1E3DD !important; color: var(--terracotta);",
+            "onclick": ""
+        },
+        {
+            "tipo": "normal",
+            "hora": "15:20 - 15:40",
+            "sala1": "Adaptación muscular al trabajo de resistencia con carga en caballos criollos y mulares",
+            "sala2": "Construcción y validación de un modelo de apropiación territorial rural mediante Delphi",
+            "sala3": "Trayectorias socioecológicas: sistema de producción tradicional, minería ilegal y retorno a sistemas agroforestales"
+        },
+        {
+            "tipo": "normal",
+            "hora": "15:40 - 16:00",
+            "sala1": "Enriquecimiento de partículas virales y aislamiento de ácidos nucleicos en heces de bovinos y porcinos",
+            "sala2": "Turismo sostenible como estrategia de gobernanza territorial y valoración de servicios ecosistémicos en Líbano, Tolima",
+            "sala3": "Caracterización participativa de sistemas productivos tradicionales para retornar a los sistemas agroforestales"
+        },
+        {
+            "tipo": "normal",
+            "hora": "16:00 - 16:20",
+            "sala1": "Presencia microbiana en un acondicionador de suelo, biotransformado por larvas de mosca soldado negra",
+            "sala2": "Propuesta de zonificación agroambiental para el ordenamiento territorial de la microcuenca del río Atá, Planadas",
+            "sala3": "Evaluación de la sostenibilidad en sistemas ganaderos de Cereté y San Carlos, Córdoba"
+        },
+        {
+            "tipo": "normal",
+            "hora": "16:20 - 16:50",
+            "sala1": "Metaanálisis de riesgos sanitarios de proteína de larvas de insectos en alimentación para acuicultura sostenible",
+            "sala2": "Evaluación in vitro del potencial antagonista de Trichoderma spp. y Bacillus spp. frente a Neopestalotiopsis rosae asociada al cultivo de fresa",
+            "sala3": "Caracterización preliminar de los sistemas productivos pecuarios asociados a ASOPROLECHE SJ en la cuenca alta del río Frío, Zipaquirá (Cundinamarca)"
+        }
+    ],
+    "dia3": [
+        {
+            "tipo": "normal",
+            "hora": "08:10 - 08:30",
+            "sala1": "Suplemento nutricional sostenible para tilapia mediante cría de tenebrios (Tenebrio molitor)",
+            "sala2": "Respuesta del arroz Fedearroz F-70 a promotores de enraizamiento bajo secano en Casanare",
+            "sala3": "Análisis multitemporal de coberturas de la tierra como insumo para la evaluación de la fragmentación del paisaje en la quebrada El Amoladero (Zipaquirá, Colombia)"
+        },
+        {
+            "tipo": "normal",
+            "hora": "08:30 - 08:50",
+            "sala1": "Nutrición de precisión con nanofertilizantes en arándano (Vaccinium corymbosum L.) y su impacto en rendimiento y calidad del fruto",
+            "sala2": "Microorganismos asociados a la pudrición vascular de la papayuela (Vasconcellea pubescens), en Boyacá, Colombia",
+            "sala3": "Análisis de la dinámica y cambio de la cobertura forestal en la parcela UNAD ubicada en la Reserva Natural de la Sociedad Civil Diamante de las Aguas"
+        },
+        {
+            "tipo": "normal",
+            "hora": "08:50 - 09:10",
+            "sala1": "Dinámica del carbono particulado (POC) y asociado a minerales (MOC) en oxisol bajo rotación arroz-forraje",
+            "sala2": "Compactación en suelos agrícolas de agroecosistemas familiares campesinos en la microcuenca del río Cormechoque, Siachoque, Boyacá",
+            "sala3": "Análisis comparativo de la evolución de la responsabilidad social en informes de sostenibilidad de Fundación Muzo"
+        },
+        {
+            "tipo": "normal",
+            "hora": "09:10 - 09:30",
+            "sala1": "Reservas de carbono en SAFs con achiote de cinco consejos comunitarios del Chocó, Colombia",
+            "sala2": "Estudio de la capacidad de retención de Cd²⁺ por composites biochar-zeolita sintetizados a partir de residuos",
+            "sala3": "Evaluación in vitro del extracto del fruto botánico de la papa (Solanum tuberosum) como biocontrol de enfermedades de cultivos hortofrutícolas en Boyacá"
+        },
+        {
+            "tipo": "normal",
+            "hora": "09:30 - 09:50",
+            "sala1": "Tipologías de relevo generacional rural: análisis fenomenológico desde la agricultura familiar en Colombia",
+            "sala2": "Bioboost Symbiot, bioacelerador microbiano de kombucha y kéfir para biotransformación de residuos orgánicos",
+            "sala3": "Pautas de manejo silvicultural de especies forestales nativas en áreas de sabanas inundables de Orocué, Casanare"
+        },
+        {
+            "tipo": "break",
+            "hora": "09:50 - 10:30",
+            "texto": "Break - Pósteres (Ver Listado Día 2)",
+            "icono": "fa-solid fa-mug-hot",
+            "imagen": "",
+            "nombres": [],
+            "style": "",
+            "onclick": "goToPosters('dia2')"
+        },
+        {
+            "tipo": "plenaria",
+            "hora": "10:30 - 11:20",
+            "texto": "Plenaria",
+            "icono": "fa-solid fa-users",
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "plenaria-dia3.svg",
+            "nombres": [],
+            "style": "",
+            "onclick": ""
+        },
+        {
+            "tipo": "panel",
+            "hora": "11:20 - 12:20",
+            "texto": "VIEM – Salón de la innovación",
+            "icono": "fa-regular fa-lightbulb",
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "viem-innovacion.svg",
+            "nombres": [],
+            "style": "",
+            "onclick": ""
+        },
+        {
+            "tipo": "almuerzo",
+            "hora": "12:30 - 14:00",
+            "texto": "Almuerzo libre",
+            "icono": "fa-solid fa-utensils",
+            "imagen": "",
+            "nombres": [],
+            "style": "background-color: var(--cream) !important; color: var(--dark-green);",
+            "onclick": ""
+        },
+        {
+            "tipo": "normal",
+            "hora": "14:00 - 14:20",
+            "sala1": "Pobreza y determinantes sociales de salud en tiempos de transición energética en campesinos del Magdalena",
+            "sala2": "AgroIA Cormechoque: plataforma de inteligencia artificial para el diagnóstico, la simulación y la gestión del riesgo de compactación del suelo en la agricultura campesina",
+            "sala3": "Conocimientos de dinámica poblacional de moscas de la fruta (Anastrepha spp.) en el Meta, Colombia"
+        },
+        {
+            "tipo": "normal",
+            "hora": "14:20 - 14:40",
+            "sala1": "El Páramo habitado: criterios comunitarios y ordenamiento tradicional en el corredor Socha-Socotá",
+            "sala2": "Análisis bibliométrico sobre tendencias y evolución de la sostenibilidad y economía circular en aguas cafeteras",
+            "sala3": "Análisis temporal de transiciones fenológicas reproductivas en aguacate Hass bajo trópico"
+        },
+        {
+            "tipo": "normal",
+            "hora": "14:40 - 15:00",
+            "sala1": "Asociatividad comunitaria y gobernanza territorial: diagnóstico problémico en la vereda Guchipas, Pasca (Cundinamarca)",
+            "sala2": "Aceites esenciales tropicales y su potencial uso agropecuario identificado en redes de asociación",
+            "sala3": "Impacto de la moniliasis en cultivos de copoazú y la bioeconomía de mujeres indígenas amazónicas"
+        },
+        {
+            "tipo": "normal",
+            "hora": "15:00 - 15:20",
+            "sala1": "Filosofía ambiental y ética del cuidado como horizonte para la sostenibilidad de la vida",
+            "sala2": "Bioeconomía y agricultura escolar: transformación de especies aromáticas para fortalecer la seguridad alimentaria y el emprendimiento",
+            "sala3": "Análisis de la distribución potencial de H. illucens en Colombia y su posible respuesta a escenarios de cambio climático al 2060"
+        },
+        {
+            "tipo": "panel",
+            "hora": "15:20 - 16:20",
+            "texto": "Panel 3",
+            "icono": "fa-solid fa-people-group",
+            // RUTA AJUSTADA AQUÍ
+            "imagen": "panel-3.svg",
+            "nombres": [],
+            "style": "",
+            "onclick": ""
+        },
+        {
+            "tipo": "especial",
+            "hora": "16:20 - 17:00",
+            "texto": "Cierre",
+            "icono": "fa-solid fa-flag-checkered",
+            "imagen": "",
+            "nombres": [],
+            "style": "background-color: var(--dark-green) !important; color: white;",
+            "onclick": ""
+        }
+    ],
+    "posteres": [
+        {
+            "tipo": "dia",
+            "id": "anchor-dia1",
+            "titulo": "Exhibición Día 1 (Agosto 26)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-01",
+            "eje": "E3",
+            "titulo": "Hato Viejo (Valle del Cauca): sistematización de una experiencia de innovación territorial y conectividad biológica para la gobernanza y resiliencia ecológica"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-01",
+            "eje": "E2",
+            "titulo": "Red de Bioeconomía Comunitaria para la adaptación al cambio climático, la seguridad alimentaria y la economía circular en zonas áridas de La Guajira, mediante la producción sostenible de hongos y el aprovechamiento de residuos agroindustriales"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-01",
+            "eje": "E1",
+            "titulo": "Diseño e implementación de un deshidratador con tecnología solar para el secado de frutas y otras especies"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-02",
+            "eje": "E2",
+            "titulo": "Estudio de factibilidad para la instalación de un deshidratador solar de frutas y plantas en Boyacá"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-02",
+            "eje": "E1",
+            "titulo": "Caracterización sociodemográfica y variables asociadas a la inclusión de personas con discapacidad en el sector agropecuario"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-02",
+            "eje": "E3",
+            "titulo": "Apiturismo agroecológico para el arraigo juvenil y la conservación de la biodiversidad en Cauca"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-03",
+            "eje": "E3",
+            "titulo": "Avances en la identificación y conservación de semillas nativas y criollas en la cuenca alta del río Frío, Zipaquirá"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-03",
+            "eje": "E2",
+            "titulo": "Revisión operativa de limpieza y desinfección del expendio cárnico"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-04",
+            "eje": "E3",
+            "titulo": "Corredores biológicos urbanos como estrategia de conectividad ecológica: caso de estudio CIP Dosquebradas – UNAD"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-03",
+            "eje": "E1",
+            "titulo": "Taninos como estrategia nutricional para reducir metano y mejorar la eficiencia productiva en ganadería tropical"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-04",
+            "eje": "E1",
+            "titulo": "Eficiencia in vitro de extractos vegetales para el control de Rhipicephalus microplus en etapa adulta"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-05",
+            "eje": "E1",
+            "titulo": "Sistemas productivos de aguacate raza antillana en Casanare: caracterización de suelos, limitantes fitosanitarias y optimización del rendimiento"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-04",
+            "eje": "E2",
+            "titulo": "Evaluación de biorreactores artesanales para la fermentación del café, con inoculación de microorganismos autóctonos"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-06",
+            "eje": "E1",
+            "titulo": "Estrategias para la inoculación efectiva del tizón tardío (Phytophthora infestans) en cultivos de papa (Solanum tuberosum L.), variedad Diacol Capiro"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-05",
+            "eje": "E2",
+            "titulo": "Evaluación de dietas para adultos de Chrysoperla carnea bajo condiciones controladas en Paz de Ariporo, Casanare"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-07",
+            "eje": "E1",
+            "titulo": "Efectos de los suplementos nutricionales sobre la producción y calidad de leche en bovinos de trópico bajo"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-08",
+            "eje": "E1",
+            "titulo": "Caracterización morfoagronómica in situ de cacao nativo (Theobroma cacao L.) de Puerto Asís, Putumayo, Colombia"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-09",
+            "eje": "E1",
+            "titulo": "Aquaponic Aula Viva, aprendizaje significativo mediante sistemas acuapónicos en entornos educativos STEAM"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-10",
+            "eje": "E1",
+            "titulo": "Transformación sostenible, resiliente y eficiente de los sistemas de producción equina en Colombia"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-11",
+            "eje": "E1",
+            "titulo": "Desempeño técnico y eficiencia energética de un sistema de recirculación de agua para trucha en Tinjacá, Boyacá"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-05",
+            "eje": "E3",
+            "titulo": "Transformación social y conservación del agua para la sostenibilidad rural: experiencia comunitaria en la vereda La Mesa, Paicol (Huila)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-12",
+            "eje": "E1",
+            "titulo": "Evaluación de Trichoderma harzianum y Bacillus subtilis para el control biológico de Cercospora coffeicola y Hemileia vastatrix en café (Coffea arabica L.) en Santander, Colombia"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-06",
+            "eje": "E3",
+            "titulo": "Percepción de la adopción de biotecnologías reproductivas en sistemas doble propósito de los Montes de María, barreras y oportunidades"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-06",
+            "eje": "E2",
+            "titulo": "Evaluación del proceso de extracción de celulosa a partir del tamo de arroz"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-07",
+            "eje": "E2",
+            "titulo": "Agricultura de precisión en pisos térmicos: análisis de cultivos mediante sensores para la optimización del riego"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-13",
+            "eje": "E1",
+            "titulo": "Cultivatech AI: plataforma de agricultura inteligente para la predicción de producción y el apoyo a la toma de decisiones en sistemas agroambientales sostenibles"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-14",
+            "eje": "E1",
+            "titulo": "Caracterización y evaluación del bienestar animal en bovinos de carne en la Colonia Penal de Acacías, Meta"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-07",
+            "eje": "E3",
+            "titulo": "Cartografía social en sostenibilidad humana e identidad rural en el sector de San Isidro, en Ábrego, Norte de Santander"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-08",
+            "eje": "E3",
+            "titulo": "Evaluación espacial de conflictos de ocupación en la ronda hídrica de la quebrada El Amoladero (Zipaquirá, Colombia)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-08",
+            "eje": "E2",
+            "titulo": "Acuicultura sostenible en jaulas flotantes con especies nativas en Barrancabermeja"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-09",
+            "eje": "E2",
+            "titulo": "Viabilidad de huerta vertical con botellas plásticas recuperadas en una institución educativa de Santa Marta"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-09",
+            "eje": "E3",
+            "titulo": "Mujer rural y su producción agrícola: alternativa de desarrollo para Tasco (Boyacá) en la posminería"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-15",
+            "eje": "E1",
+            "titulo": "Proceso fitosanitario para controlar la moniliasis del copoazú en chagras indígenas de Leticia, Amazonas"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-10",
+            "eje": "E3",
+            "titulo": "Sembrando resiliencia: integración psiquiátrica y agronómica para la rehabilitación psicosocial de los pacientes del Hospital Mental Homeris"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-16",
+            "eje": "E1",
+            "titulo": "Variabilidad del maíz en el Valle del Cauca: caracterización y propuesta de una nueva clasificación racial"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-17",
+            "eje": "E1",
+            "titulo": "Tithonia diversifolia: alternativa forrajera sostenible para sistemas ganaderos en suelos ácidos del Cauca"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-10",
+            "eje": "E2",
+            "titulo": "Efectos observados del caldo sulfocálcico en el manejo fitosanitario del cultivo de tomate cherry"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-18",
+            "eje": "E1",
+            "titulo": "Producción sostenible de café y seguridad alimentaria: diagnóstico participativo en Potrerito, Pradera, Valle"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-11",
+            "eje": "E3",
+            "titulo": "DRMI Hato Viejo: gobernanza ambiental y resiliencia socioecológica en la cuenca del río Yotoco"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-12",
+            "eje": "E3",
+            "titulo": "Biodiversidad, diálogo de saberes y gobernanza territorial: una experiencia de transformación rural desde la UNAD"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-11",
+            "eje": "E2",
+            "titulo": "Agroecología y cultivos sostenibles como estrategias integrales para la restauración ambiental y la seguridad alimentaria en zonas rurales de San José del Guaviare"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-12",
+            "eje": "E2",
+            "titulo": "Construcción colectiva para el desarrollo agroecológico en cultivadoras de mora en Charta, Santander, Colombia"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-13",
+            "eje": "E3",
+            "titulo": "Esfuerzos de conservación privada y conectividad socioecológica en la cuenca media del río Yotoco"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-13",
+            "eje": "E2",
+            "titulo": "Aprovechamiento de cacota del cacao para la producción de compost orgánico en el CIP Turbo"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-19",
+            "eje": "E1",
+            "titulo": "Prevención de intoxicaciones por agroquímicos: un proceso de pedagogía disruptiva"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-20",
+            "eje": "E1",
+            "titulo": "Evaluación de humedales construidos plantados con Rhizophora mangle para tratamiento de aguas residuales urbanas"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-14",
+            "eje": "E2",
+            "titulo": "Actividad de los microorganismos antagónicos en el manejo de la dinámica fitosanitaria en cacao y banano"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-21",
+            "eje": "E1",
+            "titulo": "Vivero agroforestal integrado con trazabilidad fitosanitaria y monitoreo LoRaWAN como estrategia de adaptación climática para la producción de semilla de plátano de calidad Dominico-Hartón y prevención sanitaria en sistemas agroforestales"
+        },
+        {
+            "tipo": "dia",
+            "id": "anchor-dia2",
+            "titulo": "Exhibición Día 2 (Agosto 27)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-22",
+            "eje": "E1",
+            "titulo": "Caracterización fisicoquímica en fuentes hídricas superficiales de la Institución Educativa Agrícola La Holanda"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-23",
+            "eje": "E1",
+            "titulo": "Efecto de fitonutracéutico con capsaicinoides y polifenoles sobre la productividad e integridad intestinal en pollos"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-15",
+            "eje": "E2",
+            "titulo": "Criterios integrales de diseño para fermentadores de café: control atmosférico, inercia térmica y geometría"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-24",
+            "eje": "E1",
+            "titulo": "Conocimientos de dinámica poblacional de moscas de la fruta (Anastrepha spp.) en el Meta, Colombia"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-14",
+            "eje": "E3",
+            "titulo": "Análisis comparativo de la evolución de la responsabilidad social en informes de sostenibilidad de Fundación Muzo"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-25",
+            "eje": "E1",
+            "titulo": "Optimización tecnológica y marcos ágiles de trabajo como estrategia de innovación sostenible en el cultivo de caña de azúcar en la finca La Julia (Candelaria, Valle del Cauca)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-16",
+            "eje": "E2",
+            "titulo": "Fortalecimiento de la ganadería lechera mediante sistemas de conservación forrajera en El Calvario, Meta"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-15",
+            "eje": "E3",
+            "titulo": "Transición agroecológica y sostenibilidad en sistemas socioecológicos mediante acción participativa en Felidia, Valle del Cauca"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-16",
+            "eje": "E3",
+            "titulo": "Influencia de los conflictos socioambientales derivados de la producción porcina en el municipio de Palmira, Valle del Cauca"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-17",
+            "eje": "E3",
+            "titulo": "Modelación agroambiental del riesgo de inundación mediante el uso de SIG en el municipio de Inírida, Guainía"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-26",
+            "eje": "E1",
+            "titulo": "Café Castillo con fermentación inteligente: innovación biotecnológica para calidad, rentabilidad y sostenibilidad"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-18",
+            "eje": "E3",
+            "titulo": "El territorio como laboratorio vivo: conocimiento biocultural y bioeconomía en experiencias rurales de Colombia"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-17",
+            "eje": "E2",
+            "titulo": "Análisis del seguimiento y monitoreo de variables de fermentación en la calidad del café variedad Castillo"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-19",
+            "eje": "E3",
+            "titulo": "Desarrollo de una plataforma web geoespacial para el análisis de fuentes hídricas potenciales como contribución a la planificación de acueductos rurales en la vereda Ricaurte"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-27",
+            "eje": "E1",
+            "titulo": "Bioconversión de residuos mediante Hermetia illucens como estrategia de sostenibilidad rural"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-20",
+            "eje": "E3",
+            "titulo": "Propagación in vitro de Cattleya warscewiczii mediante subcultivos sucesivos para la conservación de germoplasma ornamental"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-28",
+            "eje": "E1",
+            "titulo": "Diseño de un sistema productivo sostenible, basado en procesos agroforestales, con ordenamiento de predios y rotación de cultivos “Finca Llano de Mata”, municipio de Belén, Boyacá"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-29",
+            "eje": "E1",
+            "titulo": "Diagnóstico de sistemas agroforestales en la vereda La Esmeralda con implementación de geo-inteligencia artificial"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-21",
+            "eje": "E3",
+            "titulo": "Protocolo de manejo animal basado en saber local y lógica territorial en Casanare"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-22",
+            "eje": "E3",
+            "titulo": "Análisis longitudinal de las acciones de protección y conservación del primate tití cabeza de algodón"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-30",
+            "eje": "E1",
+            "titulo": "Innovación y agronegocios sostenibles para fortalecer la competitividad de jóvenes cacaoteros en el municipio de Rionegro, Santander"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-31",
+            "eje": "E1",
+            "titulo": "Orobanche minor (Orobanchaceae): una holoparásita invasora de importancia agropecuaria en el altiplano cundiboyacense"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-32",
+            "eje": "E1",
+            "titulo": "Respuesta fotosintética de arveja (Pisum sativum L.) sometida a estrés hídrico en Silvania, Cundinamarca"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-18",
+            "eje": "E2",
+            "titulo": "Evaluación vegetativa de las variedades de frijol arbustivo Zandú y Yarí en la región Sumapaz"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-33",
+            "eje": "E1",
+            "titulo": "Caracterización y análisis técnico-económico de un arreglo agroforestal en Carcasí, Santander"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-23",
+            "eje": "E3",
+            "titulo": "Gobernanza territorial olivícola: aprendizajes comparados entre Boyacá y Córdoba, España"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-34",
+            "eje": "E1",
+            "titulo": "Modelo de optimización del transporte de la panela adaptado a las condiciones locales de Sandoná"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-35",
+            "eje": "E1",
+            "titulo": "Evaluación del contenido de clorofila mediante SPAD en café Castillo bajo dos gradientes altitudinales del Sumapaz"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-36",
+            "eje": "E1",
+            "titulo": "Análisis del uso de biopreparados en la producción de durazno como estrategia para fortalecer la sostenibilidad agroecológica y la competitividad en la cadena de valor en García Rovira"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-37",
+            "eje": "E1",
+            "titulo": "Dinámica poblacional y control biológico de Eupalamides guyanensis en palma de aceite"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-38",
+            "eje": "E1",
+            "titulo": "El género Ischnura (Odonata: Coenagrionidae) en el Neotrópico: diversidad y evidencias de hibridación"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-19",
+            "eje": "E2",
+            "titulo": "Optimización de la producción de vino artesanal a partir de la huella hídrica en Rivera"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-39",
+            "eje": "E1",
+            "titulo": "Modelo socioecológico del sistema Trau Misak para la evaluación de la sustentabilidad en el resguardo indígena Totoroez (Cauca, Colombia)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-24",
+            "eje": "E3",
+            "titulo": "Fortalecimiento comunitario para el manejo de moscas de la fruta en mango en El Colegio"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-40",
+            "eje": "E1",
+            "titulo": "Análisis de la triangulación ecoeficiente laboral para el desarrollo de la colmena Tetragonisca angustula"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-41",
+            "eje": "E1",
+            "titulo": "Conservación participativa urbana - laboratorio vivo y banco de germoplasma in situ: resultados preliminares"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-25",
+            "eje": "E3",
+            "titulo": "Integración de una red IoT de largo alcance para el monitoreo en tiempo real de variables fisicoquímicas del agua en unidades de producción acuícola"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-20",
+            "eje": "E2",
+            "titulo": "Identificación de alternativas de transformación agroindustrial del banano y diseño de un plan de negocios y estrategia de marca en el municipio de El Zulia, Norte de Santander"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-42",
+            "eje": "E1",
+            "titulo": "Captura de carbono en fitorremediación con Jatropha curcas L. en Puerto Libertador"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-21",
+            "eje": "E2",
+            "titulo": "Aprovechamiento de residuos orgánicos mediante pacas biodigestoras desde un enfoque de bioeconomía urbana en Acacías, Meta"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-26",
+            "eje": "E3",
+            "titulo": "Análisis de flujo de materiales en la gestión de los residuos sólidos en la Ciudad Autónoma de Buenos Aires (2016-2020)"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-43",
+            "eje": "E1",
+            "titulo": "Producción de Blaptica dubia bajo condiciones controladas y su potencial como proteína alternativa"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-22",
+            "eje": "E2",
+            "titulo": "Calidad poscosecha y de fritura de papa cultivada en diferentes métodos de siembra y condiciones de cultivo"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-44",
+            "eje": "E1",
+            "titulo": "Uso estratégico de bozales en borregos Hampshire para pastoreo controlado en caducifolios, Tuta, Boyacá"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E2-23",
+            "eje": "E2",
+            "titulo": "Biotecnologías reproductivas para el mejoramiento genético de bovinos doble propósito en pequeños productores en Santander"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E3-27",
+            "eje": "E3",
+            "titulo": "Evaluación del cambio físico de la subcuenca del río Fucha - Bogotá"
+        },
+        {
+            "tipo": "poster",
+            "codigo": "E1-45",
+            "eje": "E1",
+            "titulo": "Efecto de bioestimulante orgánico-mineral con Bacillus subtilis sobre la floración y el cuajado de aguacate Hass (Persea americana Mill.) en Támesis, Antioquia, Colombia"
+        }
+    ]
+};
+
+// ---------------------------------------------------------------------
+// Motor de renderizado — no necesita editarse para actualizar la agenda.
+// ---------------------------------------------------------------------
+
+function imgSlotHTML(src, label, fileNote, mini) {
+    if (!src) {
+        // Sin imagen asignada todavía: se muestra el espacio reservado directamente
+        return `<div class="img-slot img-slot-empty ${mini ? 'img-slot-mini' : ''}">
+                    <div class="img-slot-placeholder">
+                        <i class="fa-solid fa-image"></i>
+                        ${mini ? '' : `<span>${label}</span><small>${fileNote}</small>`}
+                    </div>
+                </div>`;
+    }
+    
+    // Si no es miniatura, agregamos el evento onclick para abrir el modal
+    const clickAction = !mini ? `onclick="openModal('${src}')" title="Clic para ampliar"` : '';
+    
+    return `<div class="img-slot ${mini ? 'img-slot-mini' : ''}">
+                <img src="${src}" alt="${label}" onerror="imgSlotFallback(this)" ${clickAction}>
+                <div class="img-slot-placeholder">
+                    <i class="fa-solid fa-image"></i>
+                    ${mini ? '' : `<span>${label}</span><small>${fileNote}</small>`}
+                </div>
+            </div>`;
+}
+
+// Funciones para el Modal de Imágenes
+function openModal(imgSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modalImg.src = imgSrc;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Evita que se haga scroll en el fondo
+}
+
+function closeModal(event) {
+    // Solo cierra si hace clic en el fondo negro o en la X
+    if (event.target.id === 'imageModal' || event.target.classList.contains('close-modal')) {
+        document.getElementById('imageModal').classList.remove('active');
+        document.body.style.overflow = 'auto'; // Restaura el scroll
+    }
+}
+
+function nombresHTML(nombres) {
+    if (!nombres || !nombres.length) return '';
+    return `<ul class="item-nombres">${nombres.map(n => `<li>${n}</li>`).join('')}</ul>`;
+}
+
+function renderDia1() {
+    const mount = document.getElementById('dia1-mount');
+    mount.innerHTML = AGENDA_DATA.dia1.map(item => {
+        const styleAttr = item.style ? ` style="${item.style}"` : '';
+        if (item.tipo === 'plenaria' || item.tipo === 'panel') {
+            return `
+            <div class="timeline-item">
+                <div class="time-badge"${styleAttr}>${item.hora}</div>
+                <div class="timeline-content">
+                    <div class="timeline-banner-container">
+                        <!-- El 'false' al final desactiva el formato miniatura para usar el tamaño de portada -->
+                        ${imgSlotHTML(item.imagen, item.titulo, `Archivo esperado: ${item.imagen || 'archivo.svg'}`, false)}
+                        <div style="font-size: 1.25rem; font-weight: 700;">${item.titulo}</div>
+                        ${nombresHTML(item.nombres)}
+                    </div>
+                </div>
+            </div>`;
+        }
+        return `
+            <div class="timeline-item">
+                <div class="time-badge"${styleAttr}>${item.hora}</div>
+                <div class="timeline-content">${item.titulo}</div>
+            </div>`;
+    }).join('');
+}
+
+function renderSalaThead(theadId) {
+    const s = AGENDA_DATA.salas;
+    document.getElementById(theadId).innerHTML = `
+        <tr>
+            <th class="col-time">Horario</th>
+            <th class="sala-1-th">${s.sala1.titulo}<span class="sala-subtitle">${s.sala1.subtitulo}</span></th>
+            <th class="sala-2-th">${s.sala2.titulo}<span class="sala-subtitle">${s.sala2.subtitulo}</span></th>
+            <th class="sala-3-th">${s.sala3.titulo}<span class="sala-subtitle">${s.sala3.subtitulo}</span></th>
+        </tr>`;
+}
+
+function renderDayTable(dayKey, mountId) {
+    const mount = document.getElementById(mountId);
+    mount.innerHTML = AGENDA_DATA[dayKey].map(row => {
+        if (row.tipo === 'normal') {
+            return `
+            <tr>
+                <td class="col-time">${row.hora}</td>
+                <td onclick="toggleHighlight(this)">${row.sala1}</td>
+                <td onclick="toggleHighlight(this)">${row.sala2}</td>
+                <td onclick="toggleHighlight(this)">${row.sala3}</td>
+            </tr>`;
+        }
+        // filas especiales: plenaria | panel | almuerzo | especial | break
+        const styleAttr = row.style ? ` style="${row.style}"` : '';
+        const onclickAttr = row.onclick ? ` onclick="${row.onclick}"` : '';
+        const cls = row.tipo === 'break' ? 'event-break' : 'event-plenary';
+        const titleAttr = row.tipo === 'break' ? ' title="Clic para ver lista de pósteres"' : '';
+        const icon = row.icono ? `<i class="${row.icono}"></i>` : '';
+
+        if (row.tipo === 'plenaria' || row.tipo === 'panel') {
+            return `
+            <tr class="special-row">
+                <td class="col-time">${row.hora}</td>
+                <td colspan="3" class="${cls}"${styleAttr}>
+                    <div class="timeline-banner-container" style="padding: 15px; max-width: 900px; margin: 0 auto;">
+                        <!-- El 'false' desactiva el formato miniatura para usar el tamaño de portada -->
+                        ${imgSlotHTML(row.imagen, row.texto, `Archivo esperado: ${row.imagen || 'archivo.svg'}`, false)}
+                        <div style="font-size: 1.25rem; font-weight: 700; margin-top: 5px;">${icon}&nbsp; ${row.texto}</div>
+                        ${nombresHTML(row.nombres)}
+                    </div>
+                </td>
+            </tr>`;
+        }
+        return `
+            <tr class="special-row">
+                <td class="col-time">${row.hora}</td>
+                <td colspan="3" class="${cls}"${styleAttr}${onclickAttr}${titleAttr}>${icon} ${row.texto}</td>
+            </tr>`;
+    }).join('');
+}
+
+function renderPosteres() {
+    const mount = document.getElementById('posteres-mount');
+    mount.innerHTML = AGENDA_DATA.posteres.map(p => {
+        if (p.tipo === 'dia') {
+            const icon = p.id === 'anchor-dia1' ? 'fa-regular fa-calendar' : 'fa-regular fa-calendar-check';
+            return `<tr><td colspan="2" class="posters-day-divider" id="${p.id}"><i class="${icon}"></i> ${p.titulo}</td></tr>`;
+        }
+        return `<tr><td style="text-align:center;"><span class="badge ${p.eje}">${p.codigo}</span></td><td>${p.titulo}</td></tr>`;
+    }).join('');
+}
+
+function renderAll() {
+    renderDia1();
+    renderSalaThead('dia2-thead');
+    renderSalaThead('dia3-thead');
+    renderDayTable('dia2', 'dia2-mount');
+    renderDayTable('dia3', 'dia3-mount');
+    renderPosteres();
+}
+
+// Navegación entre la vista de inicio y la vista de agenda
+function showAgenda(tabId) {
+    document.getElementById('homeView').classList.remove('active');
+    document.getElementById('agendaView').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (tabId) openTab(tabId);
+}
+
+function showHome() {
+    document.getElementById('agendaView').classList.remove('active');
+    document.getElementById('homeView').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Tab switching functionality
+function openTab(tabId) {
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    document.getElementById(tabId).classList.add('active');
+
+    const clickedBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(`'${tabId}'`));
+    if (clickedBtn) clickedBtn.classList.add('active');
+}
+
+// Dynamic row jumping for Posters
+function goToPosters(dayString) {
+    openTab('posteres');
+    setTimeout(() => {
+        const anchor = document.getElementById('anchor-' + dayString);
+        if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+}
+
+// Interactive highlight function for presentation cells
+function toggleHighlight(cell) {
+    if (cell.classList.contains('cell-highlight')) {
+        cell.classList.remove('cell-highlight');
+    } else {
+        document.querySelectorAll('.cell-highlight').forEach(el => el.classList.remove('cell-highlight'));
+        cell.classList.add('cell-highlight');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', renderAll);
+</script>
+
+</body>
+</html>
