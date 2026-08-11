@@ -287,10 +287,7 @@
             background-color: #0f2d17; 
         }
 
-        /* ================= ESPACIOS PARA IMÁGENES JPG =================
-           Cada .img-slot intenta cargar un archivo .jpg.
-           Se asume ruta relativa para misma carpeta.
-        */
+        /* ================= ESPACIOS PARA IMÁGENES JPG ================= */
         .img-slot {
             position: relative;
             border-radius: 14px;
@@ -308,7 +305,6 @@
             display: block;
         }
 
-        /* EFECTO HOVER PARA IMÁGENES AMPLIABLES */
         .img-slot:not(.img-slot-mini) img {
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -317,7 +313,6 @@
             transform: scale(1.02);
         }
 
-        /* ESTILOS DEL MODAL (LIGHTBOX) */
         .modal {
             display: none;
             position: fixed;
@@ -397,7 +392,7 @@
         .img-slot-portada {
             width: 100%;
             max-width: 900px;
-            aspect-ratio: 12 / 5; /* Mantiene la proporción exacta de 1200x500 */
+            aspect-ratio: 12 / 5; 
             height: auto;
             margin: 0 auto 30px;
         }
@@ -416,18 +411,6 @@
         .img-slot-mini .img-slot-placeholder span,
         .img-slot-mini .img-slot-placeholder small { display: none; }
 
-        .event-plenary-inner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .timeline-content-inner {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Nuevos estilos para hacer las imágenes de la línea de tiempo grandes */
         .timeline-banner-container {
             display: flex;
             flex-direction: column;
@@ -435,7 +418,7 @@
 
         .timeline-banner-container .img-slot {
             width: 100%;
-            aspect-ratio: 12 / 5; /* Mantiene la proporción exacta de 1200x500 */
+            aspect-ratio: 12 / 5; 
             height: auto;
             margin-bottom: 15px;
             border-radius: 10px;
@@ -449,11 +432,6 @@
             opacity: 0.85;
         }
         .item-nombres li { line-height: 1.4; }
-
-        @media (max-width: 768px) {
-            .axis-grid { grid-template-columns: 1fr; }
-            /* Se eliminan las alturas fijas porque aspect-ratio escala automáticamente */
-        }
 
         .tab-content {
             display: none;
@@ -689,6 +667,80 @@
         .badge.E2 { background-color: var(--yellow); color: var(--dark-green); }
         .badge.E3 { background-color: var(--terracotta); }
 
+        /* ================= ESTILOS SECCIÓN PATROCINADORES ================= */
+        .sponsors-section {
+            padding: 25px 20px;
+            background-color: white;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .sponsors-section h3 {
+            color: var(--dark-green);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.8;
+        }
+
+        .sponsors-marquee {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        /* Efecto de difuminado en los bordes para que los logos entren suavemente */
+        .sponsors-marquee::before, .sponsors-marquee::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 80px;
+            height: 100%;
+            z-index: 2;
+        }
+        .sponsors-marquee::before {
+            left: 0;
+            background: linear-gradient(to right, white, transparent);
+        }
+        .sponsors-marquee::after {
+            right: 0;
+            background: linear-gradient(to left, white, transparent);
+        }
+
+        .sponsors-track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            animation: scroll-sponsors 25s linear infinite;
+        }
+
+        .sponsors-track:hover {
+            animation-play-state: paused;
+        }
+
+        .sponsors-track img {
+            height: 60px; /* Altura estándar para todos los logos */
+            margin: 0 35px; /* Espaciado entre logos */
+            object-fit: contain;
+            filter: grayscale(100%) opacity(70%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sponsors-track img:hover {
+            filter: grayscale(0%) opacity(100%);
+            transform: scale(1.08);
+        }
+
+        @keyframes scroll-sponsors {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+
         @media (max-width: 768px) {
             .hero-header h1 { font-size: 1.5rem; }
             .tab-btn { padding: 10px 15px; font-size: 0.9rem; width: 100%; justify-content: center;}
@@ -698,12 +750,10 @@
             .timeline-content { margin-left: 0; width: 100%; }
             .tab-content { padding: 15px; }
             .col-time { width: 90px; font-size: 0.85rem; }
+            .sponsors-track img { height: 45px; margin: 0 20px; }
         }
     </style>
     <script>
-        // Disponible desde ya para que los <img> de la portada (que están
-        // en el HTML estático) puedan usar el fallback aunque fallen a cargar
-        // antes de que se ejecute el <script> principal al final de la página.
         function imgSlotFallback(img) {
             img.style.display = 'none';
             const slot = img.closest('.img-slot');
@@ -722,15 +772,10 @@
 
     <!-- ============================================================
          VISTA DE INICIO
-         Página principal que explica el evento. Desde aquí se despliegan
-         los botones para acceder a la agenda.
     ============================================================= -->
     <div id="homeView" class="view active">
         <div class="home-section">
-
-            <!-- Espacio para la imagen SVG de portada. -->
             <div class="img-slot img-slot-portada" id="slot-portada">
-                <!-- RUTA AJUSTADA AQUÍ -->
                 <img src="portada.jpg" alt="Portada CICAA 2026" onerror="imgSlotFallback(this)" onclick="openModal('portada.jpg')" title="Clic para ampliar">
                 <div class="img-slot-placeholder">
                     <i class="fa-solid fa-image"></i>
@@ -785,11 +830,6 @@
 
     <!-- ============================================================
          VISTA DE AGENDA
-         Todo el contenido de aquí abajo (línea de tiempo, tablas y
-         pósteres) se genera automáticamente en JavaScript a partir del
-         objeto AGENDA_DATA que está al inicio del <script>. Para mover
-         horarios, cambiar títulos o agregar nombres de ponentes, edite
-         ese objeto — no hace falta tocar este HTML.
     ============================================================= -->
     <div id="agendaView" class="view">
 
@@ -842,10 +882,35 @@
                 </table>
             </div>
         </div>
-
     </div><!-- /#agendaView -->
 
-</div>
+    <!-- ============================================================
+         SECCIÓN DE PATROCINADORES
+    ============================================================= -->
+    <div class="sponsors-section">
+        <h3>Patrocinadores</h3>
+        <div class="sponsors-marquee">
+            <div class="sponsors-track" id="sponsors-track">
+                
+                <!-- 
+                  👇 AÑADE TUS LOGOS AQUÍ 👇 
+                  Solo ponlos en orden (logo1.png, logo2.jpg, etc.). 
+                  El script automáticamente los duplicará para crear el carrusel infinito.
+                -->
+                
+                <img src="logo1.jpg" alt="Patrocinador 1">
+                <img src="logo2.jpg" alt="Patrocinador 2">
+                <img src="logo3.png" alt="Patrocinador 3">
+                <img src="logo4.jpg" alt="Patrocinador 4">
+                <img src="logo5.png" alt="Patrocinador 5">
+                
+                <!-- 👆 AÑADE TUS LOGOS AQUÍ 👆 -->
+                
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /.main-container -->
 
 <!-- HTML DEL MODAL (LIGHTBOX) -->
 <div id="imageModal" class="modal" onclick="closeModal(event)">
@@ -1779,7 +1844,6 @@ const AGENDA_DATA = {
 
 function imgSlotHTML(src, label, fileNote, mini) {
     if (!src) {
-        // Sin imagen asignada todavía: se muestra el espacio reservado directamente
         return `<div class="img-slot img-slot-empty ${mini ? 'img-slot-mini' : ''}">
                     <div class="img-slot-placeholder">
                         <i class="fa-solid fa-image"></i>
@@ -1787,10 +1851,7 @@ function imgSlotHTML(src, label, fileNote, mini) {
                     </div>
                 </div>`;
     }
-    
-    // Si no es miniatura, agregamos el evento onclick para abrir el modal
     const clickAction = !mini ? `onclick="openModal('${src}')" title="Clic para ampliar"` : '';
-    
     return `<div class="img-slot ${mini ? 'img-slot-mini' : ''}">
                 <img src="${src}" alt="${label}" onerror="imgSlotFallback(this)" ${clickAction}>
                 <div class="img-slot-placeholder">
@@ -1800,20 +1861,18 @@ function imgSlotHTML(src, label, fileNote, mini) {
             </div>`;
 }
 
-// Funciones para el Modal de Imágenes
 function openModal(imgSrc) {
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage');
     modalImg.src = imgSrc;
     modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Evita que se haga scroll en el fondo
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal(event) {
-    // Solo cierra si hace clic en el fondo negro o en la X
     if (event.target.id === 'imageModal' || event.target.classList.contains('close-modal')) {
         document.getElementById('imageModal').classList.remove('active');
-        document.body.style.overflow = 'auto'; // Restaura el scroll
+        document.body.style.overflow = 'auto';
     }
 }
 
@@ -1832,7 +1891,6 @@ function renderDia1() {
                 <div class="time-badge"${styleAttr}>${item.hora}</div>
                 <div class="timeline-content">
                     <div class="timeline-banner-container">
-                        <!-- El 'false' al final desactiva el formato miniatura para usar el tamaño de portada -->
                         ${imgSlotHTML(item.imagen, item.titulo, `Archivo esperado: ${item.imagen || 'archivo.jpg'}`, false)}
                         <div style="font-size: 1.25rem; font-weight: 700;">${item.titulo}</div>
                         ${nombresHTML(item.nombres)}
@@ -1871,7 +1929,6 @@ function renderDayTable(dayKey, mountId) {
                 <td onclick="toggleHighlight(this)">${row.sala3}</td>
             </tr>`;
         }
-        // filas especiales: plenaria | panel | almuerzo | especial | break
         const styleAttr = row.style ? ` style="${row.style}"` : '';
         const onclickAttr = row.onclick ? ` onclick="${row.onclick}"` : '';
         const cls = row.tipo === 'break' ? 'event-break' : 'event-plenary';
@@ -1884,7 +1941,6 @@ function renderDayTable(dayKey, mountId) {
                 <td class="col-time">${row.hora}</td>
                 <td colspan="3" class="${cls}"${styleAttr}>
                     <div class="timeline-banner-container" style="padding: 15px; max-width: 900px; margin: 0 auto;">
-                        <!-- El 'false' desactiva el formato miniatura para usar el tamaño de portada -->
                         ${imgSlotHTML(row.imagen, row.texto, `Archivo esperado: ${row.imagen || 'archivo.jpg'}`, false)}
                         <div style="font-size: 1.25rem; font-weight: 700; margin-top: 5px;">${icon}&nbsp; ${row.texto}</div>
                         ${nombresHTML(row.nombres)}
@@ -1920,7 +1976,6 @@ function renderAll() {
     renderPosteres();
 }
 
-// Navegación entre la vista de inicio y la vista de agenda
 function showAgenda(tabId) {
     document.getElementById('homeView').classList.remove('active');
     document.getElementById('agendaView').classList.add('active');
@@ -1934,7 +1989,6 @@ function showHome() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Tab switching functionality
 function openTab(tabId) {
     const contents = document.querySelectorAll('.tab-content');
     contents.forEach(content => content.classList.remove('active'));
@@ -1948,7 +2002,6 @@ function openTab(tabId) {
     if (clickedBtn) clickedBtn.classList.add('active');
 }
 
-// Dynamic row jumping for Posters
 function goToPosters(dayString) {
     openTab('posteres');
     setTimeout(() => {
@@ -1957,7 +2010,6 @@ function goToPosters(dayString) {
     }, 100);
 }
 
-// Interactive highlight function for presentation cells
 function toggleHighlight(cell) {
     if (cell.classList.contains('cell-highlight')) {
         cell.classList.remove('cell-highlight');
@@ -1967,7 +2019,27 @@ function toggleHighlight(cell) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', renderAll);
+// INICIALIZACIÓN
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Renderizar la agenda original
+    renderAll();
+    
+    // 2. Lógica para el carrusel infinito de patrocinadores
+    const track = document.getElementById('sponsors-track');
+    if (track) {
+        // Ocultar imágenes que no se encuentren (evita íconos rotos si aún no subes el logo)
+        const images = track.querySelectorAll('img');
+        images.forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+            });
+        });
+        
+        // Duplicar el contenido para el efecto visual de desplazamiento infinito continuo
+        // Esto evita que tengas que copiar y pegar los mismos logos múltiples veces en el HTML
+        track.innerHTML += track.innerHTML;
+    }
+});
 </script>
 
 </body>
