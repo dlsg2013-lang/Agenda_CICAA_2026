@@ -14,33 +14,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /*
-           ===========================================================
-           PALETA DE COLOR — Teoría del color aplicada (modo claro)
-           ===========================================================
-           Esquema análogo cálido con ancla fría: se recorre la rueda
-           de color desde el verde (frescura/naturaleza) hacia el
-           amarillo y la terracota (calidez/tierra), todo anclado por
-           un verde bosque muy oscuro que aporta seriedad institucional.
-
-           - Base / ancla:    Verde bosque oscuro   -> jerarquía, texto sobre color, encabezados
-           - Análogo vívido:  Verde hoja brillante   -> Sala 1 (acento vivo, usar con texto oscuro encima)
-           - Análogo cálido:  Amarillo / ámbar        -> Sala 2 (transición cálida, texto oscuro)
-           - Complementario tierra: Terracota             -> Sala 3 (cierre cálido de la rampa)
-           - Neutro:          Crema                   -> fondos, respiro visual, reduce fatiga
-
-           Nota de accesibilidad: el verde vívido (#46BF34) y el amarillo
-           (#F2A922) son colores claros/saturados; por contraste WCOMBI
-           se usan con texto verde oscuro encima en vez de blanco.
-        */
         :root {
-            --dark-green: #174021;   /* Base: Verde bosque oscuro */
-            --light-green: #46BF34;  /* Análogo vívido: Sala 1 */
-            --yellow: #F2A922;       /* Análogo cálido: Sala 2 */
-            --terracotta: #BF7449;   /* Complementario tierra: Sala 3 */
-            --cream: #F2F2DF;        /* Neutro cálido */
-
-            /* Colores complementarios para UI */
+            --dark-green: #174021;
+            --light-green: #46BF34;
+            --yellow: #F2A922;
+            --terracotta: #BF7449;
+            --cream: #F2F2DF;
             --bg-color: #FAFAF8;
             --text-dark: #202B22;
             --border-color: #DCE3D8;
@@ -67,6 +46,7 @@
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(23, 64, 33, 0.1);
             overflow: hidden;
+            position: relative;
         }
 
         .hero-header {
@@ -152,6 +132,18 @@
             color: var(--dark-green);
         }
 
+        /* Botón de impresión PDF */
+        .tab-btn.pdf-btn {
+            background-color: #F1E3DD;
+            color: var(--terracotta);
+            border: 1px solid var(--terracotta);
+            margin-left: auto; /* Empuja el botón a la derecha si hay espacio */
+        }
+        .tab-btn.pdf-btn:hover {
+            background-color: var(--terracotta);
+            color: white;
+        }
+
         /* ================= VISTA DE INICIO ================= */
         .view { display: none; }
         .view.active { display: block; }
@@ -229,12 +221,70 @@
             color: #5b6660;
         }
 
+        /* ================= SECCIÓN MAPA Y SEDE ================= */
+        .venue-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 1100px;
+            margin: 0 auto 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .venue-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .venue-icon {
+            background: var(--cream);
+            color: var(--terracotta);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .venue-text h3 {
+            color: var(--dark-green);
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .venue-text p {
+            font-size: 0.95rem;
+            color: #5b6660;
+            line-height: 1.4;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px var(--border-color);
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         .cta-row {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 14px;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .btn-cta {
@@ -297,453 +347,177 @@
             justify-content: center;
             background: white;
         }
-
-        .img-slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .img-slot:not(.img-slot-mini) img {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .img-slot:not(.img-slot-mini):hover img {
-            transform: scale(1.02);
-        }
+        .img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .img-slot:not(.img-slot-mini) img { cursor: pointer; transition: transform 0.3s ease; }
+        .img-slot:not(.img-slot-mini):hover img { transform: scale(1.02); }
+        .img-slot-portada { width: 100%; max-width: 900px; aspect-ratio: 12 / 5; height: auto; margin: 0 auto 30px; }
 
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            z-index: 1000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal.active {
-            display: flex;
-            opacity: 1;
-        }
-        .modal-content {
-            max-width: 95%;
-            max-height: 90vh;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            object-fit: contain;
-        }
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .close-modal:hover {
-            color: var(--light-green);
-        }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { max-width: 95%; max-height: 90vh; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain; }
+        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.2s ease; }
+        .close-modal:hover { color: var(--light-green); }
 
         .img-slot.img-slot-empty {
             border: 2px dashed #C9D3CC;
             background: repeating-linear-gradient(45deg, #FBFBF9, #FBFBF9 10px, #F3F2ED 10px, #F3F2ED 20px);
         }
+        .img-slot-placeholder { display: none; text-align: center; color: #8B978F; padding: 10px; }
+        .img-slot.img-slot-empty .img-slot-placeholder { display: block; }
+        .img-slot-placeholder i { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+        .img-slot-placeholder span { display: block; font-weight: 700; font-size: 0.85rem; color: var(--dark-green); }
+        .img-slot-placeholder small { display: block; font-size: 0.72rem; margin-top: 3px; color: #9AA5A0; word-break: break-all; }
 
-        .img-slot-placeholder {
-            display: none;
-            text-align: center;
-            color: #8B978F;
-            padding: 10px;
-        }
-
-        .img-slot.img-slot-empty .img-slot-placeholder {
-            display: block;
-        }
-
-        .img-slot-placeholder i {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .img-slot-placeholder span {
-            display: block;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--dark-green);
-        }
-
-        .img-slot-placeholder small {
-            display: block;
-            font-size: 0.72rem;
-            margin-top: 3px;
-            color: #9AA5A0;
-            word-break: break-all;
-        }
-
-        .img-slot-portada {
-            width: 100%;
-            max-width: 900px;
-            aspect-ratio: 12 / 5; 
-            height: auto;
-            margin: 0 auto 30px;
-        }
-
-        .img-slot-mini {
-            width: 46px;
-            height: 46px;
-            min-width: 46px;
-            border-radius: 8px;
-            margin-right: 12px;
-        }
-
-        .img-slot-mini.img-slot-empty { border-width: 2px; }
-        .img-slot-mini .img-slot-placeholder { padding: 0; }
-        .img-slot-mini .img-slot-placeholder i { font-size: 1rem; margin-bottom: 0; color: #8B978F; }
-        .img-slot-mini .img-slot-placeholder span,
-        .img-slot-mini .img-slot-placeholder small { display: none; }
-
-        .timeline-banner-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .timeline-banner-container .img-slot {
-            width: 100%;
-            aspect-ratio: 12 / 5; 
-            height: auto;
-            margin-bottom: 15px;
-            border-radius: 10px;
-        }
-
-        .item-nombres {
-            list-style: none;
-            margin-top: 6px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            opacity: 0.85;
-        }
+        .timeline-banner-container { display: flex; flex-direction: column; }
+        .timeline-banner-container .img-slot { width: 100%; aspect-ratio: 12 / 5; height: auto; margin-bottom: 15px; border-radius: 10px; }
+        .item-nombres { list-style: none; margin-top: 6px; font-size: 0.78rem; font-weight: 500; opacity: 0.85; }
         .item-nombres li { line-height: 1.4; }
 
-        .tab-content {
-            display: none;
-            padding: 30px;
-            animation: fadeIn 0.4s ease-out forwards;
-        }
+        .tab-content { display: none; padding: 30px; animation: fadeIn 0.4s ease-out forwards; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .tab-content.active {
-            display: block;
-        }
+        .timeline { max-width: 600px; margin: 0 auto; position: relative; padding: 20px 0; }
+        .timeline::before { content: ''; position: absolute; left: 50px; top: 0; bottom: 0; width: 4px; background-color: var(--cream); border-radius: 4px; }
+        .timeline-item { display: flex; align-items: center; margin-bottom: 25px; position: relative; }
+        .time-badge { background: var(--terracotta); color: white; font-weight: 700; font-size: 0.95rem; padding: 8px 16px; border-radius: 20px; min-width: 150px; text-align: center; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.08); letter-spacing: 0.5px; }
+        .timeline-content { background: white; border: 2px solid var(--cream); margin-left: 20px; padding: 15px 25px; border-radius: 12px; flex-grow: 1; font-weight: 600; color: var(--dark-green); font-size: 1.1rem; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+        .timeline-item:hover .timeline-content { transform: translateX(5px); box-shadow: 0 5px 15px rgba(23, 64, 33, 0.08); border-color: var(--light-green); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .timeline {
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            padding: 20px 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50px;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background-color: var(--cream);
-            border-radius: 4px;
-        }
-
-        .timeline-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .time-badge {
-            background: var(--terracotta);
-            color: white;
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            min-width: 150px;
-            text-align: center;
-            z-index: 2;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-            letter-spacing: 0.5px;
-        }
-
-        .timeline-content {
-            background: white;
-            border: 2px solid var(--cream);
-            margin-left: 20px;
-            padding: 15px 25px;
-            border-radius: 12px;
-            flex-grow: 1;
-            font-weight: 600;
-            color: var(--dark-green);
-            font-size: 1.1rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-
-        .timeline-item:hover .timeline-content {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(23, 64, 33, 0.08);
-            border-color: var(--light-green);
-        }
-
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 12px;
-            box-shadow: 0 0 0 1px var(--border-color);
-            -webkit-overflow-scrolling: touch;
-            max-height: 75vh;
-        }
-
-        .agenda-table {
-            width: 100%;
-            min-width: 1000px;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: white;
-        }
-
-        .agenda-table th, .agenda-table td {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            vertical-align: top;
-            font-size: 0.95rem;
-            transition: background-color 0.2s ease;
-        }
-
-        .agenda-table td:last-child, .agenda-table th:last-child {
-            border-right: none;
-        }
-
-        .agenda-table thead th {
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            color: white;
-            font-weight: 700;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-
-        .col-time {
-            position: sticky;
-            left: 0;
-            background-color: #FDFDFD;
-            font-weight: 700;
-            color: var(--dark-green);
-            z-index: 10;
-            text-align: center;
-            vertical-align: middle !important;
-            width: 130px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
-            letter-spacing: 0.5px;
-        }
-
-        .agenda-table thead th.col-time {
-            z-index: 30;
-        }
+        .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 0 0 1px var(--border-color); -webkit-overflow-scrolling: touch; max-height: 75vh; }
+        .agenda-table { width: 100%; min-width: 1000px; border-collapse: separate; border-spacing: 0; background: white; }
+        .agenda-table th, .agenda-table td { padding: 16px; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; font-size: 0.95rem; transition: background-color 0.2s ease; }
+        .agenda-table td:last-child, .agenda-table th:last-child { border-right: none; }
+        .agenda-table thead th { position: sticky; top: 0; z-index: 20; color: white; font-weight: 700; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+        .col-time { position: sticky; left: 0; background-color: #FDFDFD; font-weight: 700; color: var(--dark-green); z-index: 10; text-align: center; vertical-align: middle !important; width: 130px; box-shadow: 2px 0 5px rgba(0,0,0,0.02); letter-spacing: 0.5px; }
+        .agenda-table thead th.col-time { z-index: 30; }
 
         .sala-1-th { background-color: var(--light-green) !important; color: var(--dark-green) !important; }
         .sala-2-th { background-color: var(--yellow) !important; color: var(--dark-green) !important; }
         .sala-3-th { background-color: var(--terracotta) !important; }
+        .sala-subtitle { display: block; font-size: 0.8rem; font-weight: 500; margin-top: 8px; opacity: 0.95; line-height: 1.3; }
 
-        .sala-subtitle {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-top: 8px;
-            opacity: 0.95;
-            line-height: 1.3;
-        }
+        .event-break { background-color: #F3EBD9 !important; color: #8C642A; font-weight: 700; text-align: center; vertical-align: middle !important; cursor: pointer; transition: all 0.3s ease; }
+        .event-break:hover { background-color: #E8DCB8 !important; transform: scale(0.99); }
+        .event-plenary { background-color: #EAF7E6 !important; color: var(--dark-green); font-weight: 700; text-align: center; vertical-align: middle !important; }
+        .agenda-table tbody tr:not(.special-row):hover td { background-color: #EEF4F0; }
+        .agenda-table td:not(.col-time):not(.event-plenary):not(.event-break) { cursor: pointer; text-align: center; vertical-align: middle; }
+        .cell-highlight { background-color: var(--cream) !important; box-shadow: inset 0 0 0 2px var(--terracotta); border-radius: 4px; }
 
-        .event-break {
-            background-color: #F3EBD9 !important;
-            color: #8C642A;
-            font-weight: 700;
-            text-align: center;
-            vertical-align: middle !important;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* ================= BUSCADOR DE PÓSTERES ================= */
+        .posters-header { text-align: center; margin-bottom: 20px; color: var(--dark-green); }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            position: relative;
         }
-        .event-break:hover {
-            background-color: #E8DCB8 !important;
-            transform: scale(0.99);
+        .search-container i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8B978F;
+            font-size: 1.2rem;
         }
-
-        .event-plenary {
-            background-color: #EAF7E6 !important;
-            color: var(--dark-green);
-            font-weight: 700;
-            text-align: center;
-            vertical-align: middle !important;
-        }
-
-        .agenda-table tbody tr:not(.special-row):hover td {
-            background-color: #EEF4F0;
-        }
-
-        .agenda-table td:not(.col-time):not(.event-plenary):not(.event-break) {
-            cursor: pointer;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .cell-highlight {
-            background-color: var(--cream) !important;
-            box-shadow: inset 0 0 0 2px var(--terracotta);
-            border-radius: 4px;
-        }
-
-        .posters-header {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--dark-green);
-        }
-
-        .posters-table {
+        .search-container input {
             width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 0 1px var(--border-color);
+            padding: 14px 20px 14px 48px;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .search-container input:focus {
+            border-color: var(--light-green);
+            box-shadow: 0 4px 10px rgba(70, 191, 52, 0.15);
         }
 
-        .posters-table th, .posters-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-            text-align: left;
-        }
-
-        .posters-table thead th {
-            background-color: var(--dark-green);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .posters-day-divider {
-            background-color: var(--cream);
-            color: var(--dark-green);
-            font-weight: 700;
-            text-align: center !important;
-            padding: 15px !important;
-            font-size: 1.1rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: white;
-            text-align: center;
-            min-width: 50px;
-        }
+        .posters-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px var(--border-color); }
+        .posters-table th, .posters-table td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+        .posters-table thead th { background-color: var(--dark-green); color: white; position: sticky; top: 0; z-index: 10; }
+        .posters-day-divider { background-color: var(--cream); color: var(--dark-green); font-weight: 700; text-align: center !important; padding: 15px !important; font-size: 1.1rem; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; color: white; text-align: center; min-width: 50px; }
         .badge.E1 { background-color: var(--light-green); color: var(--dark-green); }
         .badge.E2 { background-color: var(--yellow); color: var(--dark-green); }
         .badge.E3 { background-color: var(--terracotta); }
 
-        /* ================= ESTILOS SECCIÓN PATROCINADORES ================= */
-        .sponsors-section {
-            padding: 25px 20px;
-            background-color: white;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-        }
-        
-        .sponsors-section h3 {
-            color: var(--dark-green);
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.8;
-        }
+        /* ================= PATROCINADORES ================= */
+        .sponsors-section { padding: 25px 20px; background-color: white; border-top: 1px solid var(--border-color); text-align: center; }
+        .sponsors-section h3 { color: var(--dark-green); font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; }
+        .sponsors-marquee { width: 100%; overflow: hidden; white-space: nowrap; position: relative; padding: 10px 0; }
+        .sponsors-marquee::before, .sponsors-marquee::after { content: ""; position: absolute; top: 0; width: 80px; height: 100%; z-index: 2; }
+        .sponsors-marquee::before { left: 0; background: linear-gradient(to right, white, transparent); }
+        .sponsors-marquee::after { right: 0; background: linear-gradient(to left, white, transparent); }
+        .sponsors-track { display: flex; align-items: center; width: max-content; animation: scroll-sponsors 25s linear infinite; }
+        .sponsors-track:hover { animation-play-state: paused; }
+        .sponsors-track img { height: 60px; margin: 0 35px; object-fit: contain; filter: grayscale(100%) opacity(70%); transition: all 0.3s ease; cursor: pointer; }
+        .sponsors-track img:hover { filter: grayscale(0%) opacity(100%); transform: scale(1.08); }
+        @keyframes scroll-sponsors { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        .sponsors-marquee {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-            padding: 10px 0;
-        }
-
-        /* Efecto de difuminado en los bordes para que los logos entren suavemente */
-        .sponsors-marquee::before, .sponsors-marquee::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 80px;
-            height: 100%;
-            z-index: 2;
-        }
-        .sponsors-marquee::before {
-            left: 0;
-            background: linear-gradient(to right, white, transparent);
-        }
-        .sponsors-marquee::after {
-            right: 0;
-            background: linear-gradient(to left, white, transparent);
-        }
-
-        .sponsors-track {
+        /* ================= BOTÓN FLOTANTE "SUBIR" ================= */
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background-color: var(--dark-green);
+            color: white;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            width: max-content;
-            animation: scroll-sponsors 25s linear infinite;
-        }
-
-        .sponsors-track:hover {
-            animation-play-state: paused;
-        }
-
-        .sponsors-track img {
-            height: 60px; /* Altura estándar para todos los logos */
-            margin: 0 35px; /* Espaciado entre logos */
-            object-fit: contain;
-            filter: grayscale(100%) opacity(70%);
-            transition: all 0.3s ease;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(23, 64, 33, 0.4);
             cursor: pointer;
+            border: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .floating-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .floating-btn:hover {
+            background-color: var(--light-green);
+            transform: translateY(-5px);
         }
 
-        .sponsors-track img:hover {
-            filter: grayscale(0%) opacity(100%);
-            transform: scale(1.08);
-        }
-
-        @keyframes scroll-sponsors {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } 
+        /* ================= ESTILOS PARA IMPRESIÓN (PDF) ================= */
+        @media print {
+            body { background-color: white; padding: 0; color: black; }
+            .hero-header { background-color: white !important; color: black !important; padding: 20px 0; border-bottom: 2px solid black; }
+            .hero-header h1 { font-size: 1.8rem; }
+            .hero-header::after, .tabs-container, .btn-cta, .back-home-btn, .sponsors-section, .floating-btn, .search-container, .venue-map { display: none !important; }
+            .main-container { box-shadow: none; border: none; }
+            .tab-content { padding: 0; page-break-inside: avoid; }
+            /* Asegura que los colores de fondo de las tablas se impriman */
+            th, td, .time-badge, .timeline-content, .badge { 
+                print-color-adjust: exact; 
+                -webkit-print-color-adjust: exact; 
+            }
+            .table-wrapper { max-height: none; overflow: visible; box-shadow: none; }
         }
 
         @media (max-width: 768px) {
             .hero-header h1 { font-size: 1.5rem; }
             .tab-btn { padding: 10px 15px; font-size: 0.9rem; width: 100%; justify-content: center;}
+            .tab-btn.pdf-btn { margin-left: 0; } /* Resetea el margen en móvil */
             .timeline::before { left: 20px; }
             .timeline-item { flex-direction: column; align-items: flex-start; gap: 10px; }
             .time-badge { min-width: auto; padding: 5px 12px; }
@@ -751,6 +525,8 @@
             .tab-content { padding: 15px; }
             .col-time { width: 90px; font-size: 0.85rem; }
             .sponsors-track img { height: 45px; margin: 0 20px; }
+            .floating-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 1.2rem; }
+            .venue-info { flex-direction: column; align-items: center; text-align: center; }
         }
     </style>
     <script>
@@ -793,11 +569,6 @@
                     investigación, experiencias de innovación territorial y estrategias de sostenibilidad
                     aplicadas al campo colombiano y latinoamericano.
                 </p>
-                <p>
-                    Durante tres días, el congreso reúne conferencias plenarias, paneles de expertos,
-                    ponencias orales organizadas en tres salas temáticas y una exhibición de pósteres
-                    con los principales trabajos de investigación presentados por la comunidad participante.
-                </p>
                 <div class="home-meta">
                     <span><i class="fa-regular fa-calendar"></i> 25 – 27 de agosto de 2026</span>
                     <span><i class="fa-solid fa-people-group"></i> Plenarias, paneles y ponencias</span>
@@ -817,6 +588,24 @@
                 <div class="axis-card e3">
                     <h3><span class="badge E3">E3</span> &nbsp;Sala 3</h3>
                     <p>Territorio, gobernanza y sostenibilidad socioambiental.</p>
+                </div>
+            </div>
+
+            <!-- SECCIÓN SEDE DEL EVENTO Y MAPA -->
+            <div class="venue-card">
+                <div class="venue-info">
+                    <div class="venue-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="venue-text">
+                        <h3>Sede del Evento</h3>
+                        <p><strong>Centro de Convenciones y Negocios de la Cámara de Comercio de Casanare</strong><br>
+                        Carrera 29 # 14 - 47, Yopal, Casanare.</p>
+                    </div>
+                </div>
+                <div class="map-container venue-map">
+                    <!-- Mapa interactivo centrado en la dirección -->
+                    <iframe src="https://maps.google.com/maps?q=Centro%20de%20convenciones%20y%20Negocios%20de%20la%20C%C3%A1mara%20de%20Comercio%20de%20Casanare,%20Carrera%2029%20%23%2014%2047%20Yopal,%20Casanare&t=&z=16&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
 
@@ -870,6 +659,12 @@
                 <p>Conozca los trabajos de investigación exhibidos durante los espacios de break.</p>
             </div>
 
+            <!-- BUSCADOR DE PÓSTERES EN TIEMPO REAL -->
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="posterSearch" onkeyup="filterPosters()" placeholder="Buscar por código, título o tema (ej. Suelos, E2)...">
+            </div>
+
             <div class="table-wrapper" style="max-height: 70vh;">
                 <table class="posters-table">
                     <thead>
@@ -891,26 +686,21 @@
         <h3>Patrocinadores</h3>
         <div class="sponsors-marquee">
             <div class="sponsors-track" id="sponsors-track">
-                
-                <!-- 
-                  👇 AÑADE TUS LOGOS AQUÍ 👇 
-                  Solo ponlos en orden (logo1.png, logo2.jpg, etc.). 
-                  El script automáticamente los duplicará para crear el carrusel infinito.
-                -->
-                
-                <img src="logo1.jpg" alt="Patrocinador 1">
+                <img src="logo1.png" alt="Patrocinador 1">
                 <img src="logo2.jpg" alt="Patrocinador 2">
                 <img src="logo3.png" alt="Patrocinador 3">
                 <img src="logo4.jpg" alt="Patrocinador 4">
                 <img src="logo5.png" alt="Patrocinador 5">
-                
-                <!-- 👆 AÑADE TUS LOGOS AQUÍ 👆 -->
-                
             </div>
         </div>
     </div>
 
 </div> <!-- /.main-container -->
+
+<!-- BOTÓN FLOTANTE VOLVER ARRIBA -->
+<button class="floating-btn" id="btnScrollTop" onclick="scrollToTop()" title="Volver arriba">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
 
 <!-- HTML DEL MODAL (LIGHTBOX) -->
 <div id="imageModal" class="modal" onclick="closeModal(event)">
@@ -1839,7 +1629,7 @@ const AGENDA_DATA = {
 };
 
 // ---------------------------------------------------------------------
-// Motor de renderizado — no necesita editarse para actualizar la agenda.
+// LÓGICA GENERAL
 // ---------------------------------------------------------------------
 
 function imgSlotHTML(src, label, fileNote, mini) {
@@ -1961,9 +1751,9 @@ function renderPosteres() {
     mount.innerHTML = AGENDA_DATA.posteres.map(p => {
         if (p.tipo === 'dia') {
             const icon = p.id === 'anchor-dia1' ? 'fa-regular fa-calendar' : 'fa-regular fa-calendar-check';
-            return `<tr><td colspan="2" class="posters-day-divider" id="${p.id}"><i class="${icon}"></i> ${p.titulo}</td></tr>`;
+            return `<tr class="row-divider"><td colspan="2" class="posters-day-divider" id="${p.id}"><i class="${icon}"></i> ${p.titulo}</td></tr>`;
         }
-        return `<tr><td style="text-align:center;"><span class="badge ${p.eje}">${p.codigo}</span></td><td>${p.titulo}</td></tr>`;
+        return `<tr class="row-poster"><td style="text-align:center;"><span class="badge ${p.eje}">${p.codigo}</span></td><td>${p.titulo}</td></tr>`;
     }).join('');
 }
 
@@ -1993,7 +1783,7 @@ function openTab(tabId) {
     const contents = document.querySelectorAll('.tab-content');
     contents.forEach(content => content.classList.remove('active'));
 
-    const buttons = document.querySelectorAll('.tab-btn');
+    const buttons = document.querySelectorAll('.tab-btn:not(.pdf-btn)');
     buttons.forEach(btn => btn.classList.remove('active'));
 
     document.getElementById(tabId).classList.add('active');
@@ -2019,25 +1809,52 @@ function toggleHighlight(cell) {
     }
 }
 
+// ---------------------------------------------------------------------
+// NUEVAS FUNCIONALIDADES: Buscador de Pósteres y Botón Flotante
+// ---------------------------------------------------------------------
+
+// 1. Buscador en tiempo real
+function filterPosters() {
+    const input = document.getElementById('posterSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#posteres-mount .row-poster');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(input)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// 2. Control del botón flotante para subir
+window.addEventListener('scroll', () => {
+    const btn = document.getElementById('btnScrollTop');
+    if (window.scrollY > 400) {
+        btn.classList.add('visible');
+    } else {
+        btn.classList.remove('visible');
+    }
+});
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // INICIALIZACIÓN
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Renderizar la agenda original
     renderAll();
     
-    // 2. Lógica para el carrusel infinito de patrocinadores
     const track = document.getElementById('sponsors-track');
     if (track) {
-        // Ocultar imágenes que no se encuentren (evita íconos rotos si aún no subes el logo)
         const images = track.querySelectorAll('img');
         images.forEach(img => {
             img.addEventListener('error', function() {
                 this.style.display = 'none';
             });
         });
-        
-        // Duplicar el contenido para el efecto visual de desplazamiento infinito continuo
-        // Esto evita que tengas que copiar y pegar los mismos logos múltiples veces en el HTML
-        track.innerHTML += track.innerHTML;
+        track.innerHTML += track.innerHTML; // Duplica para el loop infinito
     }
 });
 </script>
